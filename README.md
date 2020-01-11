@@ -1,6 +1,8 @@
 # redm_scoreboard
 simple scoreboard made for RedM
 
+Holding Z displays scoreboard
+
 
 # Installation
 1. Clone this repository.
