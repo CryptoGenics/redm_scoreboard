@@ -1,5 +1,10 @@
 @import url('res/futurastd-medium.css');
 
+@font-face { 
+	font-family: crock; 
+	src: url('crock.ttf'); 
+}
+
 html {
 	color: #fff;
 }
@@ -35,7 +40,7 @@ th {
 
 tr {
 	font-size: 120%;
-	font-family: 'Segoe UI';
+	font-family: 'Crock';
 }
 
 tr.heading {
@@ -44,18 +49,18 @@ tr.heading {
 		padding-top: 20px;
 }
 
-#tit {
-	font-family: "crock", crock, serif;
+#title {
+	font-family: 'Crock';
 	text-align:center;
 	font-size: 40px;
 	margin-top: 10%;
 	color: white;
 }
 
-#tit1 {
+#title2 {
 		color: #ffffff; /* Table Heading Text Color */
 		font-weight: 500; /* Makes the header font bold */
 		font-size: 120%;
-		font-family: 'Segoe UI';
+		font-family: 'Crock';
 		padding-top: 30px;
 }
