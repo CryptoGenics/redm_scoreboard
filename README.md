@@ -1,7 +1,7 @@
 # redm_scoreboard
 Simple scoreboard made for RedM
 
-Supports RP names and Player Ping if set in config
+Supports RP names and Player Ping
 
 Holding Z displays scoreboard
 
