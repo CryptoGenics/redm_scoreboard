@@ -31,7 +31,7 @@ AddEventHandler("redm_scoreboard:GetBoard", function(ptable)
                         end
                     else
                         TriggerEvent('vorp:getCharacter', i, function(user)
-                            if user ~= nil then
+                            if user.firstname ~= nil then
                                 if GetPlayerPing(i) then
                                     characters[i] = user.firstname..' '..user.lastname
                                     table.insert(players, '<tr><td>' .. i .. '</td><td>' .. characters[i] .. '</td><td>' .. GetPlayerPing(i) .. '<small>ms</small></td></tr>')
@@ -60,7 +60,7 @@ AddEventHandler("redm_scoreboard:GetBoard", function(ptable)
                     table.insert(players, '<tr><td>' .. i .. '</td><td>' .. characters[i] .. '</td></tr>')
                 else
                     TriggerEvent("vorp:getCharacter", i, function(user)
-                        if user ~= nil then
+                        if user.firstname ~= nil then
                             characters[i] = user.firstname..' '..user.lastname
                             table.insert(players, '<tr><td>' .. i .. '</td><td>' .. characters[i] .. '</td></tr>')
                         end
