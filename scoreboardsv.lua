@@ -87,6 +87,6 @@ AddEventHandler("redm_scoreboard:GetBoard", function(ptable, key)
 end)
 
 function HtmlEscape(text)
-    local characters = { ['&']='&amp;',['"']='&quot;',['<']='&lt;',['>']='&gt;' }
-    return text:gsub('[&"<>]', characters)
+    local characters = { ['&' ] = '&amp;', ['"']='&quot;', ['<' ] = '&lt;', ['>' ] = '&gt;', ['\n'] = '<br/>' }
+    return text:gsub('[&"<>\n]', characters):gsub(' +', function(s) return ' '..('&nbsp;'):rep(#s-1) end)
 end
