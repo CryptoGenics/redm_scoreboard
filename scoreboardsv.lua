@@ -27,7 +27,7 @@ AddEventHandler("redm_scoreboard:GetBoard", function()
                 for _, i in ipairs(players) do
                     local id = tonumber(i)
                     if characters[id] then
-                        if GetPlayerPing(i) then
+                        if GetPlayerPing(id) then
                             characters[id].ping = GetPlayerPing(id)
                         end
                     else
@@ -83,8 +83,8 @@ AddEventHandler("redm_scoreboard:GetBoard", function()
             end
         end
     end
-    TriggerClientEvent("redm_scoreboard:updatePlayers", source, players)
-    TriggerClientEvent("redm_scoreboard:updatePlayerInfo", source, characters)
+    TriggerClientEvent("redm_scoreboard:updatePlayers", _source, players)
+    TriggerClientEvent("redm_scoreboard:updatePlayerInfo", _source, characters)
 end)
 
 function HtmlEscape(text)
