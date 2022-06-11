@@ -1,4 +1,3 @@
-local MyKey
 local playerList = {}
 local playerInfo = {}
 
@@ -8,7 +7,6 @@ Citizen.CreateThread(function()
         Wait(0)
         if IsControlPressed(0, Config.key) and IsInputDisabled(0) then
             if not open then
-                MyKey = GetGameTimer()
                 local players = {}
 
                 if Config.Ping then
