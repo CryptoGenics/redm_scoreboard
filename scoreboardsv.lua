@@ -1,40 +1,40 @@
 local characters = {}
 
 RegisterServerEvent("redm_scoreboard:GetBoard")
-AddEventHandler("redm_scoreboard:GetBoard", function(ptable, key)
+AddEventHandler("redm_scoreboard:GetBoard", function()
     local _source = source
-    local players = {}
+    local players = GetPlayers()
     if Config.RPnames then
         if Config.Ping then
             if Config.RPframework == "REDEMRP" then
-                for _, i in ipairs(ptable) do
-                    if characters[i] then
-                        if GetPlayerPing(i) then
-                            table.insert(players, {i, characters[i], GetPlayerPing(i)})
+                for _, i in ipairs(players) do
+                    local id = tonumber(i)
+                    if characters[id] then
+                        if GetPlayerPing(id) then
+                            characters[id].ping = GetPlayerPing(id)
                         end
                     else
-                        TriggerEvent('redemrp:getPlayerFromId', i, function(user)
+                        TriggerEvent('redemrp:getPlayerFromId', tonumber(id), function(user)
                             if user ~= nil then
-                                if GetPlayerPing(i) then
-                                    characters[i] = HtmlEscape(user.getName())
-                                    table.insert(players, {i, characters[i], GetPlayerPing(i)})
+                                if GetPlayerPing(id) then
+                                    characters[id] = {name = HtmlEscape(user.getName()), ping = GetPlayerPing(id)}
                                 end
                             end
                         end)
                     end
                 end
             elseif Config.RPframework == "VORP" then
-                for _, i in ipairs(ptable) do
-                    if characters[i] then
-                        if GetPlayerPing(i) then
-                            table.insert(players, {i, characters[i], GetPlayerPing(i)})
+                for _, i in ipairs(players) do
+                    local id = tonumber(i)
+                    if characters[id] then
+                        if GetPlayerPing(id) then
+                            characters[id].ping = GetPlayerPing(id)
                         end
                     else
-                        TriggerEvent('vorp:getCharacter', i, function(user)
+                        TriggerEvent('vorp:getCharacter', id, function(user)
                             if user.firstname ~= nil then
-                                if GetPlayerPing(i) then
-                                    characters[i] = HtmlEscape(user.firstname..' '..user.lastname)
-                                    table.insert(players, {i, characters[i], GetPlayerPing(i)})
+                                if GetPlayerPing(id) then
+                                    characters[id] = {name = HtmlEscape(user.firstname..' '..user.lastname), ping = GetPlayerPing(id)}
                                 end
                             end
                         end)
@@ -43,50 +43,51 @@ AddEventHandler("redm_scoreboard:GetBoard", function(ptable, key)
             end
         else
             if Config.RPframework == "REDEMRP" then
-                for _, i in ipairs(ptable) do
-                    if characters[i] then
-                        table.insert(players, {i, characters[i]})
+                for _, i in ipairs(players) do
+                    local id = tonumber(i)
+                    if characters[id] then
                     else
-                        TriggerEvent('redemrp:getPlayerFromId', i, function(user)
+                        TriggerEvent('redemrp:getPlayerFromId', tonumber(id), function(user)
                             if user ~= nil then
-                                characters[i] = HtmlEscape(user.getName())
-                                table.insert(players, {i, characters[i]})
+                                characters[id] = {name = HtmlEscape(user.getName())}
                             end
                         end)
                     end
                 end
             elseif Config.RPframework == "VORP" then
-                if characters[i] then
-                    table.insert(players, {i, characters[i]})
-                else
-                    TriggerEvent("vorp:getCharacter", i, function(user)
-                        if user.firstname ~= nil then
-                            characters[i] = HtmlEscape(user.firstname..' '..user.lastname)
-                            table.insert(players, {i, characters[i]})
-                        end
-                    end)
+                for _, i in ipairs(players) do
+                    local id = tonumber(i)
+                    if characters[id] then
+                    else
+                        TriggerEvent("vorp:getCharacter", id, function(user)
+                            if user.firstname ~= nil then
+                                characters[id] = {name = HtmlEscape(user.firstname..' '..user.lastname)}
+                            end
+                        end)
+                    end
                 end
             end
         end
     elseif Config.Ping then
-        for _, i in ipairs(ptable) do
-            if GetPlayerPing(i) then
-                characters[i] = HtmlEscape(GetPlayerName(i))
-                table.insert(players, {i, characters[i], GetPlayerPing(i)})
+        for _, i in ipairs(players) do
+            local id = tonumber(i)
+            if GetPlayerPing(id) then
+                characters[id] = {name = HtmlEscape(GetPlayerName(id)), ping = GetPlayerPing(id)}
             end
         end
     else
-        for _, i in ipairs(ptable) do
-            if GetPlayerName(i) then
-                characters[i] = HtmlEscape(GetPlayerName(i))
-                table.insert(players, {i, characters[i]})
+        for _, i in ipairs(players) do
+            local id = tonumber(i)
+            if GetPlayerName(id) then
+                characters[id] = {name = HtmlEscape(GetPlayerName(id))}
             end
         end
     end
-	TriggerClientEvent("redm_scoreboard:Show", _source, players, key)
+    TriggerClientEvent("redm_scoreboard:updatePlayers", _source, players)
+    TriggerClientEvent("redm_scoreboard:updatePlayerInfo", _source, characters)
 end)
 
 function HtmlEscape(text)
-    local characters = { ['&' ] = '&amp;', ['"']='&quot;', ['<' ] = '&lt;', ['>' ] = '&gt;', ['\n'] = '<br/>' }
-    return text:gsub('[&"<>\n]', characters):gsub(' +', function(s) return ' '..('&nbsp;'):rep(#s-1) end)
+    local SpecialCharacters = { ['&' ] = '&amp;', ['"']='&quot;', ['<' ] = '&lt;', ['>' ] = '&gt;', ['\n'] = '<br/>' }
+    return text:gsub('[&"<>\n]', SpecialCharacters):gsub(' +', function(s) return ' '..('&nbsp;'):rep(#s-1) end)
 end

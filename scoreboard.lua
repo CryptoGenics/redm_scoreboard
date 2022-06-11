@@ -1,4 +1,6 @@
 local MyKey
+local playerList = {}
+local playerInfo = {}
 
 Citizen.CreateThread(function()
     open = false
@@ -7,7 +9,27 @@ Citizen.CreateThread(function()
         if IsControlPressed(0, Config.key) and IsInputDisabled(0) then
             if not open then
                 MyKey = GetGameTimer()
-                TriggerServerEvent("redm_scoreboard:GetBoard", GetPlayers(), MyKey)
+                local players = {}
+
+                if Config.Ping then
+                    for _, i in ipairs(playerList) do
+                        local id = tonumber(i)
+                        table.insert(players, 
+                        '<tr><td>' .. id .. '</td><td>' .. playerInfo[id].name .. '</td><td>' .. playerInfo[id].ping .. '<small>ms</small></td></tr>')
+                    end
+                else
+                    for _, i in ipairs(playerList) do
+                        local id = tonumber(i)
+                        table.insert(players, 
+                        '<tr><td>' .. id .. '</td><td>' .. playerInfo[id].name ..'</td></tr>')
+                    end
+                end
+
+                SendNUIMessage({
+                    text = table.concat(players)
+                })
+                DisplayHud(false)
+                DisplayRadar(false)
                 open = true
                 while open do
                     Wait(0)
@@ -26,39 +48,19 @@ Citizen.CreateThread(function()
     end
 end)
 
-RegisterNetEvent("redm_scoreboard:Show")
-AddEventHandler("redm_scoreboard:Show", function(html, key)
-    if MyKey == key then
-        DisplayHud(false)
-        DisplayRadar(false)
-        local players = {}
-        for _,v in pairs(html) do
-            if Config.Ping then
-                local id = tonumber(v[1])
-                local name = v[2]
-                local ping = tonumber(v[3])
-                table.insert(players, 
-                '<tr><td>'..id..'</td><td>'..name..'</td><td>'..ping..'<small>ms</small></td></tr>')
-            else
-                local id = tonumber(v[1])
-                local name = v[2]
-                table.insert(players, 
-                '<tr><td>'..id..'</td><td>'..name..'</td></tr>'
-                )
-            end
-        end
-        SendNUIMessage({ text = table.concat(players) })
-    end
+RegisterNetEvent("redm_scoreboard:updatePlayers")
+AddEventHandler("redm_scoreboard:updatePlayers", function(list)
+    playerList = list
 end)
 
-function GetPlayers()
-    local players = {}
+RegisterNetEvent("redm_scoreboard:updatePlayerInfo")
+AddEventHandler("redm_scoreboard:updatePlayerInfo", function(info)
+    playerInfo = info
+end)
 
-    for i = 0, 256 do
-        if NetworkIsPlayerActive(i) then
-            table.insert(players, GetPlayerServerId(i))
-        end
+Citizen.CreateThread(function() 
+    while true do
+        TriggerServerEvent("redm_scoreboard:GetBoard")
+        Citizen.Wait(5000)
     end
-
-    return players
-end
+end)
